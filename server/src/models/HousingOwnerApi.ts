@@ -92,15 +92,16 @@ export function toHousingOwnersApi(
 }
 
 /**
- * Mark an owner as "do not contact" within a single housing's owner list.
- * The owner is given the do-not-contact rank and the remaining active owners
- * are re-ranked contiguously from 1, which promotes the next owner to primary
- * when the marked owner was the primary recipient. Inactive owners and other
- * do-not-contact owners keep their rank.
+ * Re-rank an owner within a single housing's owner list while keeping the rest
+ * consistent: the remaining active owners are re-ranked contiguously from 1
+ * (which promotes the next owner to primary when the target was primary), and
+ * the target is placed at the rank returned by `rankFor`. Inactive owners and
+ * other do-not-contact owners keep their rank.
  */
-export function markOwnerDoNotContact(
+function rerankOwner(
   owners: ReadonlyArray<HousingOwnerApi>,
-  ownerId: string
+  ownerId: string,
+  rankFor: (activeOthersCount: number) => OwnerRank
 ): HousingOwnerApi[] {
   const target = owners.find((owner) => owner.ownerId === ownerId);
   if (!target) {
@@ -116,9 +117,21 @@ export function markOwnerDoNotContact(
 
   return [
     ...activeOthers,
-    { ...target, rank: DO_NOT_CONTACT_OWNER_RANK },
+    { ...target, rank: rankFor(activeOthers.length) },
     ...rest
   ];
+}
+
+/**
+ * Mark an owner as "do not contact" within a single housing's owner list.
+ * The next active owner is promoted to primary when the marked owner was the
+ * primary recipient.
+ */
+export function markOwnerDoNotContact(
+  owners: ReadonlyArray<HousingOwnerApi>,
+  ownerId: string
+): HousingOwnerApi[] {
+  return rerankOwner(owners, ownerId, () => DO_NOT_CONTACT_OWNER_RANK);
 }
 
 /**
@@ -130,23 +143,11 @@ export function unmarkOwnerDoNotContact(
   owners: ReadonlyArray<HousingOwnerApi>,
   ownerId: string
 ): HousingOwnerApi[] {
-  const target = owners.find((owner) => owner.ownerId === ownerId);
-  if (!target) {
-    return [...owners];
-  }
-
-  const others = owners.filter((owner) => owner.ownerId !== ownerId);
-  const activeOthers = others
-    .filter((owner) => isActiveOwnerRank(owner.rank))
-    .sort((a, b) => a.rank - b.rank)
-    .map((owner, index) => ({ ...owner, rank: (index + 1) as OwnerRank }));
-  const rest = others.filter((owner) => !isActiveOwnerRank(owner.rank));
-
-  return [
-    ...activeOthers,
-    { ...target, rank: (activeOthers.length + 1) as OwnerRank },
-    ...rest
-  ];
+  return rerankOwner(
+    owners,
+    ownerId,
+    (activeOthersCount) => (activeOthersCount + 1) as OwnerRank
+  );
 }
 
 export function toHousingOwnerDTO(
