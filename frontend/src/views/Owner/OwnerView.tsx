@@ -5,12 +5,18 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import { skipToken } from '@reduxjs/toolkit/query';
+import {
+  DO_NOT_CONTACT_OWNER_RANK,
+  isDoNotContactOwnerRank
+} from '@zerologementvacant/models';
 import { useParams } from 'react-router';
 
 import OwnerCard from '~/components/Owner/OwnerCard';
 import createOwnerEditionModal from '~/components/Owner/OwnerEditionModal';
 import OwnerHousingCardGrid from '~/components/Owner/OwnerHousingCardGrid';
 import OwnerKindIcon from '~/components/Owner/OwnerKindIcon';
+import RankBadge from '~/components/Owner/RankBadge';
+import { useFindOwnerHousingsQuery } from '~/services/owner-housing.service';
 import { useGetOwnerQuery } from '~/services/owner.service';
 import NotFoundView from '~/views/NotFoundView';
 
@@ -23,6 +29,17 @@ function OwnerView() {
     isLoading,
     isError
   } = useGetOwnerQuery(params.id ?? skipToken);
+  const { data: ownerHousings } = useFindOwnerHousingsQuery(
+    params.id ?? skipToken
+  );
+
+  // Do-not-contact applies to all of an owner's housings within the user's
+  // perimeter, so being flagged on any accessible housing marks the owner.
+  const doNotContact =
+    !!ownerHousings &&
+    ownerHousings.some((ownerHousing) =>
+      isDoNotContactOwnerRank(ownerHousing.rank)
+    );
 
   if (isError || (!isLoading && !owner)) {
     return <NotFoundView />;
@@ -47,7 +64,17 @@ function OwnerView() {
           <Typography component="h1" variant="h3">
             {owner?.fullName}
           </Typography>
-          {owner?.kind ? <OwnerKindIcon kind={owner.kind} /> : null}
+          <Stack
+            direction="row"
+            spacing="0.5rem"
+            useFlexGap
+            sx={{ alignItems: 'center' }}
+          >
+            {owner?.kind ? <OwnerKindIcon kind={owner.kind} /> : null}
+            {doNotContact ? (
+              <RankBadge value={DO_NOT_CONTACT_OWNER_RANK} />
+            ) : null}
+          </Stack>
         </Stack>
       </Stack>
       <Grid container columnSpacing="3rem">

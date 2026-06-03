@@ -1,3 +1,4 @@
+import { fr } from '@codegouvfr/react-dsfr';
 import Alert from '@codegouvfr/react-dsfr/Alert';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Stack from '@mui/material/Stack';
@@ -103,6 +104,13 @@ export function createCampaignFromGroupModal(
                 </Typography>
               </Stack>
             </Stack>
+
+            <Alert
+              severity="warning"
+              small
+              className={fr.cx('fr-mb-2w')}
+              description="Les propriétaires marqués « À ne pas contacter » ne seront pas inclus comme destinataires de cette campagne."
+            />
 
             <AppTextInputNext<FormSchema>
               label="Nom (obligatoire)"
