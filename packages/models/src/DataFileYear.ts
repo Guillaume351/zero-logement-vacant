@@ -10,7 +10,8 @@ export const DATA_FILE_YEAR_VALUES = [
   'lovac-2023',
   'lovac-2024',
   'lovac-2025',
-  'lovac-2026'
+  'lovac-2026',
+  'rs-2026'
 ] as const;
 
 export type DataFileYear = (typeof DATA_FILE_YEAR_VALUES)[number];

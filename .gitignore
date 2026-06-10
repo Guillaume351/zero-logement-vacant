@@ -34,6 +34,7 @@ lerna-debug.log
 
 # Misc
 .DS_Store
+import-rs-2026.report.json
 
 .idea/
 
@@ -43,9 +44,9 @@ lerna-debug.log
 # Data Stack
 .pyc
 __pycache__
+*.jsonl
 analytics/dagster/storage/
 .duckdb
-.jsonl
 analytics/*.duckdb
 analytics/dbt/*.duckdb
 analytics/exploration/data/*

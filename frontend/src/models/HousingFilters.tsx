@@ -847,6 +847,11 @@ export const dataFileYearsIncludedOptions: SelectOption<
     value: 'lovac-2026' as const,
     label: 'LOVAC 2026 (vacant > 2 ans)',
     badgeLabel: 'Source et millésime inclus : LOVAC 2026 (vacant > 2 ans)'
+  },
+  {
+    value: 'rs-2026' as const,
+    label: 'Résidences secondaires 2026',
+    badgeLabel: 'Source et millésime inclus : Résidences secondaires 2026'
   }
 ].sort((optionA, optionB) => optionB.value.localeCompare(optionA.value));
 
@@ -873,6 +878,13 @@ export const DATA_FILE_YEAR_INCLUDED_OPTIONS = DATA_FILE_YEAR_VALUES.reduce(
         })
         .with(Pattern.string.startsWith('lovac-'), (value) => {
           const label = `LOVAC ${value.slice('lovac-'.length)} (vacant > 2 ans)`;
+          return {
+            label,
+            badgeLabel: `Source et millésime inclus : ${label}`
+          };
+        })
+        .with(Pattern.string.startsWith('rs-'), (value) => {
+          const label = `Résidences secondaires ${value.slice('rs-'.length)}`;
           return {
             label,
             badgeLabel: `Source et millésime inclus : ${label}`
@@ -908,6 +920,13 @@ export const DATA_FILE_YEAR_EXCLUDED_OPTIONS = DATA_FILE_YEAR_VALUES.reduce(
         })
         .with(Pattern.string.startsWith('lovac-'), (value) => {
           const label = `LOVAC ${value.slice('lovac-'.length)} (vacant > 2 ans)`;
+          return {
+            label,
+            badgeLabel: `Source et millésime exclus : ${label}`
+          };
+        })
+        .with(Pattern.string.startsWith('rs-'), (value) => {
+          const label = `Résidences secondaires ${value.slice('rs-'.length)}`;
           return {
             label,
             badgeLabel: `Source et millésime exclus : ${label}`
@@ -983,6 +1002,11 @@ export const dataFileYearsExcludedOptions: SelectOption<
     value: 'lovac-2026' as const,
     label: 'LOVAC 2026 (vacant > 2 ans)',
     badgeLabel: 'Source et millésime exclus : LOVAC 2026 (vacant > 2 ans)'
+  },
+  {
+    value: 'rs-2026' as const,
+    label: 'Résidences secondaires 2026',
+    badgeLabel: 'Source et millésime exclus : Résidences secondaires 2026'
   }
 ].sort((optionA, optionB) => optionB.value.localeCompare(optionA.value));
 

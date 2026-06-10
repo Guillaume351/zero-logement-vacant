@@ -55,6 +55,9 @@ export function createHousingFactory(adapter: Adapter) {
           .with(Pattern.string.startsWith('lovac-'), (y) =>
             y.substring('lovac-'.length, 'lovac-YYYY'.length)
           )
+          .with(Pattern.string.startsWith('rs-'), (y) =>
+            y.substring('rs-'.length, 'rs-YYYY'.length)
+          )
           .exhaustive()
       )
       .map(Number);
