@@ -104,8 +104,6 @@ FROM read_json_auto(
 );
 ```
 
-Si je lance DuckDB depuis `server/`, le chemin devient `../recrutement/fixtures/rs-2026.jsonl.gz`.
-
 Requêtes principales :
 
 ```sql
