@@ -32,6 +32,7 @@ import AdvancedTableHeader from '../AdvancedTable/AdvancedTableHeader';
 import HousingEditionSideMenu from '../HousingEdition/HousingEditionSideMenu';
 import { HousingEditionProvider } from '../HousingEdition/useHousingEdition';
 import HousingStatusBadge from '../HousingStatusBadge/HousingStatusBadge';
+import RsSourceTag from '../Housing/RsSourceTag';
 import OccupancyTag from '../OccupancyTag/OccupancyTag';
 import SelectableListHeader from '../SelectableListHeader/SelectableListHeader';
 import { HousingProvider } from '~/hooks/useHousing';
@@ -187,6 +188,17 @@ function HousingList(props: HousingListProps) {
             </Stack>
           );
         }
+      }),
+      columnHelper.accessor('rsSource', {
+        header: 'Source RS',
+        cell: ({ cell }) => (
+          <RsSourceTag
+            rsSource={cell.getValue()}
+            tagProps={{
+              small: true
+            }}
+          />
+        )
       }),
       columnHelper.accessor(
         (value) => ({ status: value.status, subStatus: value.subStatus }),

@@ -50,6 +50,7 @@ export * from './ProspectDTO';
 export * from './RelativeLocation';
 export * from './ResetLinkDTO';
 export * from './RoomCount';
+export * from './RsSource';
 export * from './SenderDTO';
 export * from './SignupLinkDTO';
 export * from './TimePerWeek';

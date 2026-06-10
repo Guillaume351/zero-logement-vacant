@@ -57,6 +57,7 @@ import OwnershipKindSelect from './OwnershipKindSelect';
 import PerimeterSearchableSelect from './PerimeterSearchableSelect';
 import RelativeLocationSelect from './RelativeLocationSelect';
 import RoomCountSelect from './RoomCountSelect';
+import RsSourceSelect from './RsSourceSelect';
 import SurfaceSelect from './SurfaceSelect';
 import VacancyRateSelect from './VacancyRateSelect';
 import VacancyYearSelect from './VacancyYearSelect';
@@ -241,6 +242,16 @@ function HousingListFiltersSidemenu(props: Props) {
                 onChange={(values) => {
                   onChangeFilters({ dataFileYearsExcluded: values });
                   posthog.capture('filtre-sources-millesimes-exclus');
+                }}
+              />
+            </Grid>
+            <Grid component="article" mb={2} size={12}>
+              <RsSourceSelect
+                multiple
+                value={filters.rsSources ?? []}
+                onChange={(values) => {
+                  onChangeFilters({ rsSources: values });
+                  posthog.capture('filtre-source-rs');
                 }}
               />
             </Grid>

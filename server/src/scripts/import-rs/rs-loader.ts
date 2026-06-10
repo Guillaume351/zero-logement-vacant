@@ -84,6 +84,7 @@ async function updateHousings(
   const keys: ReadonlyArray<keyof RsHousingRecord> = [
     'occupancy',
     'status',
+    'rs_source',
     'data_file_years'
   ];
   const updates: Record<string, Knex.Ref<string, any>> = Object.fromEntries(

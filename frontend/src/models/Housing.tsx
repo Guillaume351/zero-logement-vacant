@@ -50,6 +50,7 @@ export interface Housing
     | 'occupancy'
     | 'occupancyIntended'
     | 'source'
+    | 'rsSource'
     | 'vacancyStartYear'
   > {
   buildingId: string | null;
@@ -162,6 +163,7 @@ export function getSource(
 ): string {
   const labels: Record<string, string> = {
     lovac: 'LOVAC',
+    rs: 'Résidences secondaires',
     ff: 'Fichiers fonciers',
     'datafoncier-import': 'Fichiers fonciers',
     'datafoncier-manual': 'Fichiers fonciers'
@@ -228,6 +230,7 @@ export function toHousingDTO(housing: Housing): HousingDTO {
     occupancy: housing.occupancy,
     occupancyIntended: housing.occupancyIntended,
     source: housing.source,
+    rsSource: housing.rsSource,
     owner: housing.owner ? toOwnerDTO(housing.owner) : null,
     lastMutationType: housing.lastMutationType,
     lastMutationDate: housing.lastMutationDate,

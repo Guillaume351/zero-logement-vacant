@@ -8,6 +8,7 @@ import { HousingStatus } from './HousingStatus';
 import { MutationType } from './Mutation';
 import { Occupancy } from './Occupancy';
 import { OwnerDTO } from './OwnerDTO';
+import { RsSource } from './RsSource';
 import type { HousingFiltersDTO } from './HousingFiltersDTO';
 import type { CadastralClassification } from './CadastralClassification';
 import type { DocumentDTO } from './DocumentDTO';
@@ -62,6 +63,7 @@ export interface HousingDTO {
   occupancy: Occupancy;
   occupancyIntended: Occupancy | null;
   source: HousingSource | null;
+  rsSource: RsSource | null;
   owner: OwnerDTO | null;
   readonly lastMutationType: MutationType | null;
   lastMutationDate: string | null;

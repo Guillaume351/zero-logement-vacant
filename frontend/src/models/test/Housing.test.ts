@@ -8,6 +8,7 @@ describe('Housing', () => {
       ${['lovac-2019']}                       | ${'lovac'}              | ${'LOVAC (2019)'}
       ${['lovac-2020', 'lovac-2021']}         | ${'lovac'}              | ${'LOVAC (2020, 2021)'}
       ${['ff-2020', 'ff-2021', 'lovac-2021']} | ${'lovac'}              | ${'Fichiers fonciers (2020, 2021), LOVAC (2021)'}
+      ${['rs-2026']}                          | ${'lovac'}              | ${'Résidences secondaires (2026)'}
       ${[]}                                   | ${'datafoncier-manual'} | ${'Fichiers fonciers'}
       ${[]}                                   | ${'datafoncier-import'} | ${'Fichiers fonciers'}
     `(

@@ -12,6 +12,7 @@ import HousingEditionSideMenu from '../HousingEdition/HousingEditionSideMenu';
 import { useHousingEdition } from '../HousingEdition/useHousingEdition';
 import HousingStatusBadge from '../HousingStatusBadge/HousingStatusBadge';
 import OccupancyBadge from './OccupancyBadge';
+import RsSourceTag from './RsSourceTag';
 
 export interface HousingHeaderProps {
   className?: string;
@@ -75,16 +76,20 @@ function HousingHeader(props: HousingHeaderProps) {
             <Typography>{housing.subStatus}</Typography>
           )}
         </Stack>
-        <Typography
-          variant="body2"
+        <Stack
+          direction="row"
+          spacing="0.5rem"
           sx={{ color: fr.colors.decisions.text.mention.grey.default }}
         >
-          Source des informations :&nbsp;
-          {getSource({
-            dataFileYears: housing.dataFileYears,
-            source: housing.source
-          })}
-        </Typography>
+          <Typography component="span" variant="body2">
+            Source des informations :&nbsp;
+            {getSource({
+              dataFileYears: housing.dataFileYears,
+              source: housing.source
+            })}
+          </Typography>
+          <RsSourceTag rsSource={housing.rsSource} tagProps={{ small: true }} />
+        </Stack>
       </Stack>
 
       <Stack direction="row" spacing="1rem" sx={{ alignItems: 'center' }}>

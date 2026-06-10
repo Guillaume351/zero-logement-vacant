@@ -110,6 +110,7 @@ function toCreate(
     occupancy: Occupancy.VACANT,
     occupancy_source: Occupancy.VACANT,
     occupancy_intended: null,
+    rs_source: null,
     status: HousingStatus.NEVER_CONTACTED,
     sub_status: null,
     data_years: [2024],

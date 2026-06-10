@@ -26,6 +26,9 @@ import {
   RELATIVE_LOCATION_FILTER_VALUES,
   type RelativeLocationFilter,
   type RoomCount,
+  RS_SOURCE_LABELS,
+  RS_SOURCE_VALUES,
+  type RsSource,
   type VacancyRate,
   type VacancyYear
 } from '@zerologementvacant/models';
@@ -45,6 +48,27 @@ export const EMPTY_OPTION = {
   label: 'Pas d’information',
   value: null
 };
+
+export const RS_SOURCE_EMPTY_OPTION: SelectOption<null> = {
+  value: null,
+  label: 'Pas d’information',
+  badgeLabel: 'Source RS : pas d’information'
+};
+
+export const RS_SOURCE_OPTIONS: Record<
+  RsSource,
+  { value: RsSource; label: string; badgeLabel: string }
+> = RS_SOURCE_VALUES.reduce(
+  (record, value) => ({
+    ...record,
+    [value]: {
+      value,
+      label: RS_SOURCE_LABELS[value],
+      badgeLabel: `Source RS : ${RS_SOURCE_LABELS[value].toLowerCase()}`
+    }
+  }),
+  {} as Record<RsSource, { value: RsSource; label: string; badgeLabel: string }>
+);
 
 export const allOccupancyOptions: SelectOption<Occupancy>[] = [
   {

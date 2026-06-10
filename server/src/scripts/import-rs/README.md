@@ -13,6 +13,7 @@ Le dry-run permet de dérouler le pipeline sans écrire en base.
 Pour lancer l’import réel :
 
 ```bash
+yarn workspace @zerologementvacant/server migrate
 yarn workspace @zerologementvacant/server tsx src/scripts/import-rs/index.ts recrutement/fixtures/rs-2026.jsonl.gz
 ```
 
@@ -52,7 +53,7 @@ Pourquoi :
 - `fast_housing` est partitionnée par `geo_code`, donc l’enrichissement regroupe les lignes par partition ;
 - j’avais d’abord utilisé un `whereIn` sur `(geo_code, local_id)`, comme dans LOVAC, mais c’était lent sur les batchs RS mélangés. J’ai donc regroupé les lignes par partition de `geo_code`, puis remplacé le `whereIn` par un `FROM (VALUES ...) JOIN`, ce qui permet à Postgres de travailler sur la bonne partition avec un plan beaucoup plus efficace ;
 - le chargement utilise une table temporaire et un `UPDATE ... FROM`, comme les imports massifs existants ;
-- le loader ne met à jour que les trois champs demandés : `occupancy`, `status`, `data_file_years`.
+- le loader ne met à jour que les champs nécessaires : `occupancy`, `status`, `rs_source`, `data_file_years`.
 
 Les autres champs sont volontairement préservés, notamment `sub_status`, `rental_value`, `occupancy_intended`, les précisions, les campagnes et les propriétaires.
 
@@ -72,10 +73,12 @@ Ce que j’ai fait :
 - ajouté la validation des lignes source ;
 - ajouté l’enrichissement par batch sur la clé métier `(geo_code, local_id)` ;
 - optimisé l’enrichissement pour respecter le partitionnement de `fast_housing` ;
-- ajouté l’update bulk limité à `occupancy`, `status`, `data_file_years` ;
+- ajouté l’update bulk limité à `occupancy`, `status`, `rs_source`, `data_file_years` ;
 - ajouté le millésime `rs-2026` dans les modèles partagés ;
 - ajouté la création d’événements d’historique ;
 - ajouté un reporter dédié pour agréger les rejets ;
+- ajouté l’import de `rs_source` pour le bonus ;
+- ajouté un filtre et un badge côté interface ;
 - ajouté des tests de transformation ;
 - ajouté des tests d’intégration du loader et de l’enricher.
 
@@ -143,7 +146,19 @@ Ce que j’ai identifié :
 Traitement retenu :
 
 - logement trouvé par `(geo_code, local_id)` : mise à jour en résidence secondaire, ajout de `rs-2026`, création d’événements si `occupancy` ou `status` change ;
-- logement déjà à jour : ignoré, pour préserver l’idempotence ;
+- logement déjà à jour : ignoré, sauf si `rs_source` doit être complété ;
 - logement non trouvé : rejeté et compté en erreur ;
 - doublon de clé métier dans le fichier : première occurrence traitée, occurrences suivantes rejetées ;
-- `rs_source` absent : accepté en phase 1, car ce champ n’est pas importé dans le modèle cible.
+- `rs_source` absent : accepté, la valeur reste `null`.
+
+## 5. Bonus interface
+
+J’ai ajouté une colonne nullable `rs_source` sur `fast_housing`, alimentée par l’import RS.
+
+Côté interface, je peux tester à trois endroits :
+
+- dans la liste des logements, panneau de filtres, accordéon “Fichiers sources”, filtre “Source RS” ;
+- dans les badges de filtres actifs, après sélection d’une source RS ;
+- dans la liste et sur la fiche logement, avec le badge “Source RS”.
+
+Pour le voir avec les données locales, je lance la migration puis je relance l’import réel. Sans relance de l’import, les logements déjà passés en `rs-2026` restent sans source RS affichée.

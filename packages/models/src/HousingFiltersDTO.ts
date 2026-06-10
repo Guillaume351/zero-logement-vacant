@@ -17,6 +17,7 @@ import { OwnershipKind } from './OwnershipKind';
 import { Precision } from './Precision';
 import type { RelativeLocationFilter } from './RelativeLocation';
 import { RoomCount } from './RoomCount';
+import { RsSource } from './RsSource';
 import { VacancyRate } from './VacancyRate';
 import { VacancyYear } from './VacancyYear';
 
@@ -56,6 +57,7 @@ export interface HousingFiltersDTO {
   geoPerimetersExcluded?: string[];
   dataFileYearsIncluded?: Array<DataFileYear | 'datafoncier-manual' | null>;
   dataFileYearsExcluded?: Array<DataFileYear | 'datafoncier-manual' | null>;
+  rsSources?: Array<RsSource | null>;
   status?: HousingStatus;
   statusList?: HousingStatus[];
   subStatus?: string[];

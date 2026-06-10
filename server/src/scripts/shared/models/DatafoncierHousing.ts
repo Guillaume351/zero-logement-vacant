@@ -44,6 +44,7 @@ export const toHousingRecordApi = (
     occupancyRegistered: toOccupancy(housing.ccthp),
     occupancyIntended: null,
     source: additionalData.source,
+    rsSource: null,
     actualEnergyConsumption: null,
     energyConsumption: null,
     energyConsumptionAt: null,

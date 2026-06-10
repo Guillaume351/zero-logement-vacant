@@ -12,6 +12,10 @@ import {
   isUUID
 } from '~/utils/validators';
 
+const isStringOrNull = (value: unknown): value is string | null => {
+  return isString(value) || value === null;
+};
+
 export interface HousingFiltersApi
   extends Pick<
     HousingFiltersDTO,
@@ -20,6 +24,7 @@ export interface HousingFiltersApi
     | 'precisions'
     | 'dataFileYearsIncluded'
     | 'dataFileYearsExcluded'
+    | 'rsSources'
     | 'energyConsumption'
     | 'ownerKinds'
     | 'ownerAges'
@@ -101,6 +106,7 @@ const validators = (property = 'filters'): ValidationChain[] => [
   body(`${property}.dataFileYearsExcluded`)
     .custom(isArrayOf(isString))
     .optional(),
+  body(`${property}.rsSources`).custom(isArrayOf(isStringOrNull)).optional(),
   body(`${property}.statusList`).custom(isArrayOf(isInteger)).optional(),
   body(`${property}.status`).optional().isInt().optional(),
   body(`${property}.subStatus`).custom(isArrayOf(isString)).optional(),

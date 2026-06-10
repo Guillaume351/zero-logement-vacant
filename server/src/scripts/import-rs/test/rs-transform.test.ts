@@ -82,7 +82,7 @@ describe('createRsTransform', () => {
     expect(reporter.failed).toHaveBeenCalledOnce();
   });
 
-  it('updates only occupancy, status and data_file_years on the housing change', () => {
+  it('updates only occupancy, status, rs_source and data_file_years on the housing change', () => {
     const transform = createRsTransform({
       adminUserId: auth.id,
       reporter: createNoopReporter()
@@ -108,6 +108,7 @@ describe('createRsTransform', () => {
         geo_code: existing.geo_code,
         occupancy: Occupancy.SECONDARY_RESIDENCE,
         status: HousingStatus.COMPLETED,
+        rs_source: source.rs_source,
         sub_status: existing.sub_status,
         rental_value: existing.rental_value,
         data_file_years: ['lovac-2026', RS_DATA_FILE_YEAR]
@@ -163,7 +164,33 @@ describe('createRsTransform', () => {
     });
   });
 
-  it('does nothing when the housing is already imported as RS 2026', () => {
+  it('updates rs_source when the housing is already imported as RS 2026 without source', () => {
+    const transform = createRsTransform({
+      adminUserId: auth.id,
+      reporter: createNoopReporter()
+    });
+    const source = genSourceRs();
+    const existing = toHousingRecord({
+      geo_code: source.geo_code,
+      local_id: source.local_id,
+      occupancy: Occupancy.SECONDARY_RESIDENCE,
+      status: HousingStatus.COMPLETED,
+      rs_source: null,
+      data_file_years: [RS_DATA_FILE_YEAR]
+    });
+
+    const actual = transform({ source, existing });
+
+    expect(actual).toPartiallyContain<RsHousingChange>({
+      type: 'housing',
+      kind: 'update',
+      value: expect.objectContaining({
+        rs_source: source.rs_source
+      })
+    });
+  });
+
+  it('does nothing when the housing is already imported as RS 2026 with the same source', () => {
     const reporter = createNoopReporter<SourceRs>();
     reporter.skipped = vi.fn();
     const transform = createRsTransform({
@@ -176,6 +203,7 @@ describe('createRsTransform', () => {
       local_id: source.local_id,
       occupancy: Occupancy.SECONDARY_RESIDENCE,
       status: HousingStatus.COMPLETED,
+      rs_source: source.rs_source,
       data_file_years: [RS_DATA_FILE_YEAR]
     });
 

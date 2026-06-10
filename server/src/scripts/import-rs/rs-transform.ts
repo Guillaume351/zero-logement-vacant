@@ -71,7 +71,9 @@ export function createRsTransform(opts: TransformOptions) {
         return [];
       }
 
-      const changes = toChanges(enriched.existing, { adminUserId });
+      const changes = toChanges(enriched.existing, enriched.source, {
+        adminUserId
+      });
       if (changes.length === 0) {
         reporter.skipped(enriched.source);
       } else {
@@ -91,6 +93,7 @@ export function createRsTransform(opts: TransformOptions) {
 
 function toChanges(
   existing: HousingRecordDBO,
+  source: SourceRs,
   opts: { adminUserId: string }
 ): RsChange[] {
   const dataFileYears = normalizeDataFileYears([
@@ -101,12 +104,14 @@ function toChanges(
     ...toWritableRecord(existing),
     occupancy: Occupancy.SECONDARY_RESIDENCE,
     status: HousingStatus.COMPLETED,
+    rs_source: source.rs_source ?? null,
     data_file_years: dataFileYears
   };
 
   const changed =
     existing.occupancy !== housing.occupancy ||
     existing.status !== housing.status ||
+    existing.rs_source !== housing.rs_source ||
     !existing.data_file_years?.includes(RS_DATA_FILE_YEAR);
   if (!changed) {
     return [];

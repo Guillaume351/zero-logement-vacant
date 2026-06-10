@@ -46,6 +46,8 @@ import {
   ownerKindOptions,
   ownershipKindsOptions,
   RELATIVE_LOCATION_OPTIONS,
+  RS_SOURCE_EMPTY_OPTION,
+  RS_SOURCE_OPTIONS,
   roomsCountOptions,
   statusOptions,
   vacancyRateOptions,
@@ -337,6 +339,12 @@ function HousingFiltersBadges(props: HousingFiltersBadgesProps) {
         onChange={(values: (DataFileYear | null)[]) =>
           onChange?.({ dataFileYearsExcluded: values })
         }
+      />
+      <FilterBadges
+        options={[RS_SOURCE_EMPTY_OPTION, ...Object.values(RS_SOURCE_OPTIONS)]}
+        values={filters.rsSources}
+        small={small}
+        onChange={(values) => onChange?.({ rsSources: values })}
       />
       <FilterBadges
         options={[

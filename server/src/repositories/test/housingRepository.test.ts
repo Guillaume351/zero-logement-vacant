@@ -1992,6 +1992,43 @@ describe('Housing repository', () => {
         });
       });
 
+      describe('by RS source', () => {
+        beforeEach(async () => {
+          const housings: ReadonlyArray<HousingApi> = [
+            { ...genHousingApi(), rsSource: 'declaration' },
+            { ...genHousingApi(), rsSource: 'taxe-habitation' },
+            { ...genHousingApi(), rsSource: null }
+          ];
+          await Housing().insert(housings.map(formatHousingRecordApi));
+        });
+
+        it('should keep housings that match the given RS source', async () => {
+          const actual = await housingRepository.find({
+            filters: {
+              rsSources: ['declaration']
+            }
+          });
+
+          expect(actual.length).toBeGreaterThan(0);
+          expect(actual).toSatisfyAll<HousingApi>((housing) => {
+            return housing.rsSource === 'declaration';
+          });
+        });
+
+        it('should keep housings without RS source when null is selected', async () => {
+          const actual = await housingRepository.find({
+            filters: {
+              rsSources: [null]
+            }
+          });
+
+          expect(actual.length).toBeGreaterThan(0);
+          expect(actual).toSatisfyAll<HousingApi>((housing) => {
+            return housing.rsSource === null;
+          });
+        });
+      });
+
       describe('by status', () => {
         beforeEach(async () => {
           const housings: ReadonlyArray<HousingApi> = HOUSING_STATUS_VALUES.map(

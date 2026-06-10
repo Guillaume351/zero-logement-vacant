@@ -16,7 +16,8 @@ import {
   Precision,
   READ_ONLY_OCCUPANCY_VALUES,
   READ_WRITE_OCCUPANCY_VALUES,
-  type CadastralClassification
+  type CadastralClassification,
+  type RsSource
 } from '@zerologementvacant/models';
 import { compactUndefined, isNotNull } from '@zerologementvacant/utils';
 import { Array, identity, Predicate, Struct } from 'effect';
@@ -1030,6 +1031,18 @@ function filteredQuery(opts: FilteredQueryOptions) {
         }
       });
     }
+    if (filters.rsSources?.length) {
+      const filterRsSources = filters.rsSources;
+      queryBuilder.where((where) => {
+        if (filterRsSources.includes(null)) {
+          where.whereNull(`${housingTable}.rs_source`);
+        }
+        const rsSources = filterRsSources.filter(isNotNull);
+        if (rsSources.length) {
+          where.orWhereIn(`${housingTable}.rs_source`, rsSources);
+        }
+      });
+    }
     if (filters.statusList?.length) {
       queryBuilder.whereIn('status', filters.statusList);
     }
@@ -1298,6 +1311,7 @@ export interface HousingRecordDBO {
   plot_id: string | null;
   building_group_id: string | null;
   data_source: HousingSource | null;
+  rs_source: RsSource | null;
   /**
    * @example ['ff-2023', 'lovac-2024']
    */
@@ -1359,6 +1373,7 @@ export const parseHousingRecordApi = (
   dataYears: housing.data_years,
   dataFileYears: housing.data_file_years ?? [],
   source: housing.data_source,
+  rsSource: housing.rs_source,
   status: housing.status,
   subStatus: housing.sub_status,
   actualEnergyConsumption: housing.actual_dpe,
@@ -1440,6 +1455,7 @@ export const parseHousingApi = (housing: HousingDBO): HousingApi => ({
   campaignIds: (housing.campaign_ids ?? []).filter((_: any) => _),
   contactCount: Number(housing.contact_count),
   source: housing.data_source,
+  rsSource: housing.rs_source,
   lastMutationType: housing.last_mutation_type,
   lastMutationDate: housing.last_mutation_date
     ? new Date(housing.last_mutation_date).toJSON()
@@ -1493,6 +1509,7 @@ export const formatHousingRecordApi = (
   occupancy_source: housing.occupancyRegistered,
   occupancy_intended: housing.occupancyIntended ?? null,
   data_source: housing.source,
+  rs_source: housing.rsSource,
   mutation_date: null,
   last_mutation_date: housing.lastMutationDate
     ? new Date(housing.lastMutationDate)

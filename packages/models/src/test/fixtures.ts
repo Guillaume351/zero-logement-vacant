@@ -758,6 +758,7 @@ export function genHousingDTO(
     occupancyIntended: faker.helpers.arrayElement(READ_WRITE_OCCUPANCY_VALUES),
     campaignIds: [],
     source: faker.helpers.arrayElement(HOUSING_SOURCE_VALUES),
+    rsSource: null,
     plotId:
       geoCode +
       faker.string.numeric({ length: 3, allowLeadingZeros: true }) +

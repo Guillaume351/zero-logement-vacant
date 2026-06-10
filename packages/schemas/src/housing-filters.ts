@@ -20,6 +20,7 @@ import {
   OWNERSHIP_KIND_VALUES,
   RELATIVE_LOCATION_FILTER_VALUES,
   ROOM_COUNT_VALUES,
+  RS_SOURCE_VALUES,
   VACANCY_RATE_VALUES,
   VACANCY_YEAR_VALUES
 } from '@zerologementvacant/models';
@@ -139,6 +140,10 @@ export const housingFilters: ObjectSchema<HousingFiltersDTO> = object({
         .defined()
         .nullable()
     ),
+  rsSources: array()
+    .transform(commaSeparatedString)
+    .transform(parseNull)
+    .of(string().oneOf(RS_SOURCE_VALUES).defined().nullable()),
   status: number().oneOf(HOUSING_STATUS_VALUES),
   statusList: array()
     .transform(commaSeparatedString)

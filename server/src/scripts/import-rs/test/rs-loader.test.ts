@@ -49,6 +49,7 @@ describe('createRsLoader', () => {
       status: HousingStatus.IN_PROGRESS,
       subStatus: 'En accompagnement',
       rentalValue: 1234,
+      rsSource: null,
       dataFileYears: ['lovac-2026' as const]
     };
     await Housing().insert(formatHousingRecordApi(housing));
@@ -59,6 +60,7 @@ describe('createRsLoader', () => {
       ...existing,
       occupancy: Occupancy.SECONDARY_RESIDENCE,
       status: HousingStatus.COMPLETED,
+      rs_source: 'taxe-habitation',
       data_file_years: ['lovac-2026', RS_DATA_FILE_YEAR]
     });
     const change: RsChange = {
@@ -76,6 +78,7 @@ describe('createRsLoader', () => {
       .first();
     expect(actual?.occupancy).toBe(Occupancy.SECONDARY_RESIDENCE);
     expect(actual?.status).toBe(HousingStatus.COMPLETED);
+    expect(actual?.rs_source).toBe('taxe-habitation');
     expect(actual?.data_file_years).toStrictEqual([
       'lovac-2026',
       RS_DATA_FILE_YEAR
